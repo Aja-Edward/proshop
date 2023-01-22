@@ -1,5 +1,5 @@
 main {
-  height: 1000px;
+  height: auto;
 }
 
 h3 {
@@ -18,4 +18,32 @@ h2 {
 
 .rating span {
   margin: 0.1rem;
+}
+
+.fluttercontainer {
+  width: 100%;
+}
+
+.fluttercontainer em {
+  font-size: 11px;
+  margin-left: 27%;
+  font-weight: 900;
+  color: gray;
+}
+
+.fluttercontainer span {
+  color: #FF9B00;
+  font-weight: 900;
+}
+
+.flutterwave {
+  background: #FF9B00;
+  padding: 10px 20px;
+  width: 100%;
+  border: none;
+
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 25px;
+  border-radius: 5px;
 }

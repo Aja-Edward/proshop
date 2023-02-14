@@ -23,8 +23,6 @@ import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 const OrderScreen = () => {
   const params = useParams();
-  const [sdkReady, setSdkReady] = useState(false);
-  const [clientId, setClientId] = useState(undefined);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -56,61 +54,13 @@ const OrderScreen = () => {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, successPay, orderId]);
-  //   const addPayPalScript = async () => {
-  //     const { data: clientId } = await axios.get("/api/config/paypal");
-  //     const script = document.createElement("script");
-  //     script.type = "text/javascript";
-  //     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-  //     script.async = true;
-  //     script.onload = () => {
-  //       setSdkReady(true);
-  //     };
-  //     document.body.appendChild(script);
-  //   };
-
-  //   if (!order || successPay) {
-  //     dispatch({ type: ORDER_PAY_RESET });
-  //     dispatch(getOrderDetails(orderId));
-  //   } else if (!order?.isPaid) {
-  //     if (order?.paymentMethod === "PayPal") {
-  //       if (!window.paypal) {
-  //         addPayPalScript();
-  //       } else {
-  //         setSdkReady(true);
-  //       }
-  //     }
-  //   }
-
-  //   // setClientId();
-  //   // (async () => {
-  //   //     const { data: clientId } = await axios.get('/api/config/flutterwave')
-  //   //     setClientId(clientId)
-  //   //     setSdkReady(true)
-  //   // })()
-  //   // setClientId()
-  // }, [dispatch, order, orderId, successPay]);
-
-  // useEffect(() => {
-  //   console.log(stripePromise);
-  //   if (order?.isPaid || order?.paymentMethod !== "Stripe") return;
-
-  //   if (!stripePromise) setSdkReady(false);
-  //   setSdkReady(true);
-  //   // if (order.paymentMethod === "Stripe") {
-  //   //   if (!stripePromise) {
-  //   //     setSdkReady(false);
-  //   //   }
-  //   // } else {
-  //   //   setSdkReady(true);
-  //   // }
-  // }, [stripePromise, order?.paymentMethod]);
+  }, [order, successPay, orderId, dispatch]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
   };
-
+  console.log(order?.clientId);
   return loading ? (
     <Loader />
   ) : error ? (
@@ -227,7 +177,7 @@ const OrderScreen = () => {
               {!order?.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
-                  {order?.paymentMethod === "PayPal" ? (
+                  {order?.paymentMethod === "Paypal" ? (
                     <PayPalScriptProvider
                       options={{ "client-id": order?.clientId }}
                     >
@@ -251,40 +201,30 @@ const OrderScreen = () => {
                       />
                     </PayPalScriptProvider>
                   ) : order.paymentMethod === "Stripe" ? (
-                    !sdkReady ? (
-                      <Loader />
-                    ) : (
-                      <Elements stripe={stripePromise}>
-                        <StripePayment
-                          email_address={order.user.email}
-                          orderId={orderId}
-                          amount={order.totalPrice}
-                        />
-                      </Elements>
-                    )
-                  ) : order.paymentMethod === "flutterwave" ? (
-                    sdkReady ? (
-                      <Loader />
-                    ) : (
-                      <FlutterWave
-                        amount={order.totalPrice}
-                        name={order.user.name}
+                    <Elements stripe={stripePromise}>
+                      <StripePayment
                         email={order.user.email}
-                      />
-                    )
-                  ) : order.paymentMethod === "Paystack" ? (
-                    sdkReady ? (
-                      <Loader />
-                    ) : (
-                      <PaystackPayment
-                        amount={order.totalPrice}
-                        name={order.user.name}
-                        email={order.user.email}
+                        clientSecret={order.clientId?.client_secret}
                         orderId={orderId}
+                        amount={order.totalPrice}
                       />
-                    )
+                    </Elements>
+                  ) : order.paymentMethod === "flutterwave" ? (
+                    <FlutterWave
+                      amount={order.totalPrice}
+                      name={order.user.name}
+                      email={order.user.email}
+                      orderId={orderId}
+                    />
+                  ) : order.paymentMethod === "Paystack" ? (
+                    <PaystackPayment
+                      amount={order.totalPrice}
+                      name={order.user.name}
+                      email={order.user.email}
+                      orderId={orderId}
+                    />
                   ) : (
-                    ""
+                    "We are looking for PAYPAL"
                   )}
                 </ListGroup.Item>
               )}

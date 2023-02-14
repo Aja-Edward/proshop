@@ -15,15 +15,14 @@
   "author": "EDWARD",
   "license": "ISC",
   "dependencies": {
-    "@stripe/react-stripe-js": "^1.16.1",
-    "@stripe/stripe-js": "^1.46.0",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.5"
+    "mongoose": "^6.6.5",
+    "stripe": "^11.7.0"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",

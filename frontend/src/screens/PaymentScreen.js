@@ -15,7 +15,7 @@ const PaymentScreen = () => {
     navigate("/shipping");
   }
 
-  const [paymentMethod, setPaymentMethod] = useState("PayPal");
+  const [paymentMethod, setPaymentMethod] = useState("Paypal");
 
   const dispatch = useDispatch();
 
@@ -35,19 +35,19 @@ const PaymentScreen = () => {
           <Col>
             <Form.Check
               type="radio"
-              label="PayPal or Credit Card"
-              id="PayPal"
+              label="Paypal or Credit Card"
+              id="Paypal"
               name="paymentMethod"
-              value="PayPal"
+              value="Paypal"
               checked
               onChange={(e) => setPaymentMethod(e.target.value)}
             ></Form.Check>
             <Form.Check
               type="radio"
-              label="Skril or Credit Card"
-              id="Skril"
+              label="Remitta or Credit Card"
+              id="Remitta"
               name="paymentMethod"
-              value="Skril"
+              value="Remitta"
               onChange={(e) => setPaymentMethod(e.target.value)}
             ></Form.Check>
             <Form.Check

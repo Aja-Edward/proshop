@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 import {
   ORDER_CREATE_FAIL,
   ORDER_CREATE_REQUEST,
@@ -73,10 +74,11 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       const { data } = await axios.get("/api/config/paystack");
       clientId = data;
     } else if (data.paymentMethod === "Stripe") {
-      const total = (data.totalPrice * 100).toFixed(2);
+      const total = data.totalPrice * 100;
       const { data: stripePaymentData } = await axios.get(
         `/api/config/stripe?total=${total}`
       );
+      console.log(stripePaymentData);
       clientId = stripePaymentData;
     }
     data.clientId = clientId;

@@ -51,6 +51,10 @@ app.get("/api/config/flutterwave", (req, res) =>
   res.send(process.env.FLUTTER_PUBLIC_KEY)
 );
 
+app.get("api/config/remitta", (req, res) =>
+  res.send(process.env.REMITTA_PUBLIC_KEY)
+);
+
 app.use(notFound);
 
 app.use(errorHandler);

@@ -1,15 +1,25 @@
-import express from 'express'
-import { getProductById, getProducts } from '../controllers/productController.js'
-const router = express.Router()
+import express from "express";
+import {
+  getProductById,
+  getProducts,
+  getTopProducts,
+  deleteProduct,
+  updateProduct,
+  createProduct,
+  createProductReview,
+} from "../controllers/productController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
+const router = express.Router();
 
+router.route("/").get(getProducts).post(protect, admin, createProduct);
+router.route("/:id/reviews").post(protect, createProductReview);
+router.get("/top", getTopProducts);
 
+router
+  .route("/:id")
+  .get(getProductById)
+  .delete(protect, admin, deleteProduct)
+  .put(protect, admin, updateProduct);
 
-router.route('/').get(getProducts)
-
-router.route('/:id').get(getProductById)
-
-
-// res.status(404)
-// throw new Error("Edward always be careful here. There is error in your code.")
-export default router
+export default router;

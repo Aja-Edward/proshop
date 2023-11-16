@@ -1,5 +1,5 @@
 main {
-  height: auto;
+  min-height: 700px;
 }
 
 h3 {
@@ -20,6 +20,37 @@ h2 {
   margin: 0.1rem;
 }
 
+/* Carousel */
+
+.carousel-item-active {
+  display: flex;
+}
+
+.carousel-caption {
+  position: absolute;
+  left: 45%;
+  top: 45%;
+
+  width: 60%;
+}
+
+.carousel-caption h2 {
+  color: #ffff;
+  width: 90%;
+}
+
+.carousel img {
+  min-height: 200px;
+  max-width: 50%;
+  padding: 30px;
+  margin: 5px;
+  border-radius: 50%;
+}
+
+.carousel a {
+  margin: 0 auto;
+}
+
 .fluttercontainer {
   width: 100%;
 }
@@ -32,12 +63,12 @@ h2 {
 }
 
 .fluttercontainer span {
-  color: #FF9B00;
+  color: #ff9b00;
   font-weight: 900;
 }
 
 .flutterwave {
-  background: #FF9B00;
+  background: #ff9b00;
   padding: 10px 20px;
   width: 100%;
   border: none;

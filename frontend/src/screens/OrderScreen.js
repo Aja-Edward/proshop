@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import FlutterWave from "../components/FlutterWave";
 import PaystackPayment from "../components/PaystackPayment";
@@ -10,6 +9,7 @@ import {
   Image,
   Card,
   ListGroupItem,
+  Button,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
@@ -18,15 +18,22 @@ import Loader from "../components/Loader";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import StripePayment from "../components/StripePayment";
-import { getOrderDetails, payOrder } from "../actions/orderActions";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from "../actions/orderActions";
+import {
+  ORDER_PAY_RESET,
+  ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 
 const OrderScreen = () => {
   const params = useParams();
 
-  const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const navigate = useNavigate;
 
   const orderId = params.id;
 
@@ -35,6 +42,12 @@ const OrderScreen = () => {
 
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
+
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const stripePromise = loadStripe(
     "pk_test_51MLh77AcQ0Nej3ZVjJVKTjEZV4AM63VEdB3IvQ0E5dCXWOxKNS96YDqqYNTzMEhtxfK97jSQtcpSKX5i9FsT65gA00ILWlOifa"
@@ -50,17 +63,34 @@ const OrderScreen = () => {
     );
   }
   useEffect(() => {
-    if (!order || successPay) {
+    if (!userInfo) {
+      navigate("/login");
+    }
+    if (!order || successPay || successDeliver) {
       dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, successPay, orderId, dispatch]);
+  }, [
+    order,
+    successPay,
+    orderId,
+    dispatch,
+    successDeliver,
+    userInfo,
+    navigate,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
   };
-  console.log(order?.clientId);
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
+  };
+  console.log(deliverOrder);
+  console.log(order);
   return loading ? (
     <Loader />
   ) : error ? (
@@ -228,6 +258,22 @@ const OrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
+
+              {loadingDeliver && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroupItem>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroupItem>
+                )}
             </ListGroup>
           </Card>
         </Col>

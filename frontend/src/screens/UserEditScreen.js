@@ -6,7 +6,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
-import { getUserDetails } from "../actions/userActions";
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_RESET } from "../constants/userConstant";
 
 const UserEditScreen = () => {
   const location = useLocation();
@@ -24,24 +25,32 @@ const UserEditScreen = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const { loading, error, user } = userDetails;
 
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = userUpdate;
+
   useEffect(() => {
-    console.log(user);
-    // if (!id || id !== "undefined" || !user) return;
-    if (!user.name || user._id !== id) {
-      dispatch(getUserDetails(id));
+    if (successUpdate) {
+      dispatch({ type: USER_UPDATE_RESET });
+      navigate("/admin/userlist");
     } else {
-      setName(user.name);
-      setEmail(user.email);
-      setIsAdmin(user.isAdmin);
+      console.log(user);
+      if (!user.name || user._id !== id) {
+        dispatch(getUserDetails(id));
+      } else {
+        setName(user.name);
+        setEmail(user.email);
+        setIsAdmin(user.isAdmin);
+      }
     }
-  }, [dispatch, user, id]);
-  console.log(id);
-  console.log(params);
-  console.log(user);
-  console.log(user.name);
+  }, [dispatch, user, id, successUpdate, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateUser({ _id: id, name, email, isAdmin }));
   };
 
   return (
@@ -51,6 +60,8 @@ const UserEditScreen = () => {
       </Link>
       <FormContainer>
         <h1> Edit User</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -61,6 +72,7 @@ const UserEditScreen = () => {
               <Form.Label>Full Name</Form.Label>
               <Form.Control
                 type="text"
+                value={name}
                 placeholder="Name here"
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
@@ -69,6 +81,7 @@ const UserEditScreen = () => {
               <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type="email"
+                value={email}
                 placeholder="Email Address"
                 onChange={(e) => setEmail(e.target.value)}
               ></Form.Control>

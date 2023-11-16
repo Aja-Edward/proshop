@@ -14,6 +14,9 @@ import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
 import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
+import ProductListScreen from "./screens/ProductListScreen";
+import OrderListScreen from "./screens/OrderListScreen";
+import ProductEditScreen from "./screens/ProductEditScreen";
 import Clock from "./components/Clock";
 import RemittaPayment from "./components/RemittaPayment";
 
@@ -22,7 +25,7 @@ const App = () => {
     <Router>
       <Header />
       <Clock />
-      <main className="py-3">
+      <main className="py-2">
         <Container>
           <Routes>
             <Route path="/order/:id" element={<OrderScreen />} />
@@ -36,8 +39,24 @@ const App = () => {
             <Route path="/cart/:id" element={<CartScreen />} />
             <Route path="/cart/" element={<CartScreen />} />
             <Route path="/admin/userlist" element={<UserListScreen />} />
+            <Route path="/admin/orderlist" element={<OrderListScreen />} />
+            <Route path="/admin/productlist" element={<ProductListScreen />} />
+            <Route
+              path="/admin/productlist/:pageNumber"
+              element={<ProductListScreen />}
+            />
             <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+            <Route
+              path="/admin/product/:id/edit"
+              element={<ProductEditScreen />}
+            />
             <Route path="/" element={<HomeScreens />} />
+            <Route path="/search/:keyword" element={<HomeScreens />} />
+            <Route path="/page/:pageNumber" element={<HomeScreens />} />
+            <Route
+              path="/search/:keyword/page/:pageNumber"
+              element={<HomeScreens />}
+            />
           </Routes>
         </Container>
       </main>
